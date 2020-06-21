@@ -20,8 +20,14 @@ const middleware = {
 };
 
 const imageresizer = {
-	resize: async function(path, width, height, method, format) {
-		let s = sharp(path);
+	resize: async function(file, width, height, method, format) {
+		// Add original extension to the filename
+		const oldExtension = file.mimetype.split('/')[1];
+		const newPath = file.path +  '.' + oldExtension;
+		await fsPromises.rename(file.path, newPath);
+		file.path = newPath;
+		// Resize the file
+		let s = sharp(file.path);
 		switch (method) {
 			case 'Fit':
 			await middleware.contain(s, width, height);
@@ -39,8 +45,11 @@ const imageresizer = {
 			await middleware.cover(s, width, height);
 			break;
 		}
-		await s.toFile('output.png');
-		await fsPromises.rename('output.png', path);
+		// Transform to the given format
+		let extension = format ? format : oldExtension;
+		await s.toFile('tmp.' + extension);
+		await fsPromises.rename('tmp.' + extension, file.path.replace(oldExtension, extension));
+		file.mimetype = file.mimetype.replace(oldExtension, extension);
 	}
 };
 

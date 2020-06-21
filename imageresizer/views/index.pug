@@ -5,11 +5,15 @@ block content
     .row
       .col-md-6.col-md-offset-3
         h1.display-4.m-b-2 Image resize
+            -if(error)
+                div#error.alert-danger #{error}
+            -else
+                div#success.alert-success #{message}
 
-        form(method='POST' action='/image-resize')
+        form(method='POST' action='/image-resize', enctype="multipart/form-data")
           div.form-group
             label(for='path') Path:*
-            input#path.form-control(type='text', required, placeholder='Insert path of the file' name='path')
+            input#path.form-control(type='file', name='path', accept='image/jpeg,image/gif,image/png,image/webp')
           div.form-group
             label(for='width') Width:*
             input#width.form-control(type='number', required, min=1, value=1, placeholder=1 name='width')
