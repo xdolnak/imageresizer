@@ -13,7 +13,7 @@ block content
         form(method='POST' action='/image-resize', enctype="multipart/form-data")
           div.form-group
             label(for='path') Path:*
-            input#path.form-control(type='file', name='path', accept='image/jpeg,image/gif,image/png,image/webp')
+            input#path.form-control(type='file', name='path', required, accept='image/jpeg,image/gif,image/png,image/webp')
           div.form-group
             label(for='width') Width:*
             input#width.form-control(type='number', required, min=1, value=1, placeholder=1 name='width')

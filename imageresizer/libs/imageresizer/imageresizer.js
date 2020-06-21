@@ -46,10 +46,18 @@ const imageresizer = {
 			break;
 		}
 		// Transform to the given format
-		let extension = format ? format : oldExtension;
+		let extension = format !== "" ? format : oldExtension;
 		await s.toFile('tmp.' + extension);
-		await fsPromises.rename('tmp.' + extension, file.path.replace(oldExtension, extension));
+		// Remove original file if it is not overwritten
+		if (extension !== oldExtension) {
+			await fsPromises.unlink(file.path);
+		}
+		// Prepare for transmission of the new file
+		file.path = file.path.replace(oldExtension, extension);
+		await fsPromises.rename('tmp.' + extension, file.path);
 		file.mimetype = file.mimetype.replace(oldExtension, extension);
+
+
 	}
 };
 
